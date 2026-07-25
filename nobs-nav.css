@@ -269,6 +269,32 @@ body {
   line-height: 1.15 !important;
 }
 
+.top-nav__branding {
+  align-items: center !important;
+}
+
+/* ---------------------------------------------------------------------
+   8. Polish: the nav had no hover feedback at all.
+   --------------------------------------------------------------------- */
+.top-nav__main-menus > li > a {
+  border-radius: 6px !important;
+  padding-inline: 10px !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.top-nav__main-menus > li > a:hover {
+  background-color: rgba(217, 70, 239, 0.18) !important;
+}
+
+.top-nav__icon-bar a:hover,
+.top-nav__icon-bar span:hover {
+  filter: brightness(1.25) !important;
+}
+
+.quick-search__input {
+  border-radius: 6px !important;
+}
+
 /* ---------------------------------------------------------------------
    7. MOBILE CONTENT - not navigation, but it is what makes the site
    look broken on a phone.
