@@ -1,23 +1,19 @@
 /* ==UserStyle==
-@name           NOBS - Navigation Fix (desktop + mobile)
+@name           NOBS - Navigation + Mobile UI
 @namespace      nobs.local
-@version        1.3.0
-@description    Smaller wordmark, fixed mobile drawer, 44x44 touch targets, usable desktop quick search, no mobile content overflow, nav hover states.
+@version        2.0.0
+@description    Rebuilt mobile drawer, edge-to-edge mobile blocks, readable chat, usable desktop quick search.
 @author         local
 @license        Unlicense
 ==/UserStyle== */
-
-/* Only works via Stylus. nobs.rawsmoke.net sends
-   Content-Security-Policy: style-src 'unsafe-inline' - no external
-   hosts - so the Settings custom_css URL field cannot load this. */
 
 @-moz-document domain("nobs.rawsmoke.net") {
 
 
   /* ---------------------------------------------------------------------
-     1. Kill sideways scroll.
-     overflow-x: clip, not hidden - clip does not create a scroll
-     container, so the sticky header keeps working. hidden would break it.
+     1. Sideways scroll. The real causes are fixed in section 7; this is
+     only a backstop. overflow-x: clip (not hidden) does not create a
+     scroll container, so the sticky header keeps working.
      --------------------------------------------------------------------- */
   html,
   body {
@@ -26,7 +22,7 @@
   }
 
   /* ---------------------------------------------------------------------
-     2. Hamburger: real touch target.
+     2. Hamburger: real touch target (was 26x18).
      --------------------------------------------------------------------- */
   .top-nav__toggle {
     display: inline-flex !important;
@@ -39,14 +35,14 @@
   }
 
   /* ---------------------------------------------------------------------
-     3. MOBILE DRAWER - rebuilt as a plain vertical column.
-     Scoped to .top-nav.mobile (the class the site's own JS toggles), so
-     it applies exactly when the drawer is open and never on desktop.
+     3. MOBILE DRAWER - structure.
+     Scoped to .top-nav.mobile, the class the site's own JS toggles.
 
-     The site lays the nav out as CSS grid. In the drawer that grid is
-     what lets a too-tall submenu escape its row and overlap its
-     neighbours. Flex column + everything full width + static positioning
-     makes every item reserve its own space instead.
+     The theme lays the nav out as CSS grid. In the drawer that grid lets
+     a too-tall submenu escape its row and paint over its neighbours - the
+     profile submenu rendered 546px tall inside a 124px icon bar. Flex
+     column + everything full width + static positioning makes every item
+     reserve its own space.
      --------------------------------------------------------------------- */
   .top-nav.mobile {
     display: flex !important;
@@ -55,8 +51,9 @@
     max-height: 85vh !important;
     overflow-y: auto !important;
     overscroll-behavior: contain !important;
-    padding: 0 12px 14px !important;
-    row-gap: 2px !important;
+    background: #0a0a0f !important;
+    padding: 0 0 18px !important;
+    row-gap: 0 !important;
   }
 
   .top-nav.mobile > * {
@@ -65,11 +62,22 @@
     flex: 0 0 auto !important;
   }
 
+  .top-nav.mobile > .top-nav__toggle {
+    width: 44px !important;
+    max-width: 44px !important;
+    flex: 0 0 44px !important;
+    align-self: flex-end !important;
+    order: -1 !important;
+    margin: 6px 10px 0 auto !important;
+  }
+
   .top-nav.mobile .top-nav__left {
     display: flex !important;
     flex-wrap: wrap !important;
     align-items: center !important;
-    row-gap: 8px !important;
+    gap: 12px !important;
+    padding: 4px 14px 12px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
   .top-nav.mobile .top-nav__main-menus,
@@ -79,7 +87,7 @@
     align-items: stretch !important;
   }
 
-  /* Every nested list flows in place instead of floating over siblings.
+  /* Nested lists flow in place instead of floating over siblings.
      This is the rule that actually fixes the overlap. */
   .top-nav.mobile ul {
     position: static !important;
@@ -98,34 +106,15 @@
     display: block !important;
     width: 100% !important;
     position: static !important;
-    /* The theme pins these to height:60px. Once the submenu is in flow
-       that clips it and the next item lands on top. */
+    /* theme pins these to height:60px, which clips the submenu */
     height: auto !important;
     min-height: 0 !important;
   }
 
-  /* Submenus indented so the hierarchy is readable once stacked. */
-  .top-nav.mobile .top-nav__dropdown > ul {
-    padding-left: 14px !important;
-    margin: 2px 0 10px !important;
-    border-left: 2px solid rgba(217, 70, 239, 0.45) !important;
-  }
-
-  /* 44px touch targets for anything tappable in the drawer. */
-  .top-nav.mobile .top-nav__main-menus a,
-  .top-nav.mobile .top-nav__right a,
-  .top-nav.mobile .top-nav__main-menus button {
-    display: flex !important;
-    align-items: center !important;
-    min-height: 44px !important;
-    padding-block: 2px !important;
-  }
-
-  /* The theme ships TWO anchors per dropdown - one for hover devices and
-     one for touch - and hides whichever does not apply. The blanket
-     display rule above un-hides both, stacking 88px of links into one
-     row. Re-assert exactly one; the extra class beats that rule on
-     specificity (0,4,0 vs 0,3,1). */
+  /* The theme ships TWO anchors per dropdown - one for hover devices, one
+     for touch - and hides whichever does not apply. The display rule in
+     section 4 un-hides both, stacking 88px of links into one row.
+     Re-assert exactly one (0,4,0 beats 0,3,1). */
   @media (hover: hover) {
     .top-nav.mobile .top-nav__main-menus .top-nav__dropdown--touch {
       display: none !important;
@@ -138,25 +127,120 @@
     }
   }
 
-  /* Keep the hamburger a 44px square instead of stretching it to the
-     full drawer width, and park it top-right as the close affordance. */
-  .top-nav.mobile > .top-nav__toggle {
-    width: 44px !important;
-    max-width: 44px !important;
-    flex: 0 0 44px !important;
-    align-self: flex-end !important;
-    order: -1 !important;
+  /* ---------------------------------------------------------------------
+     4. MOBILE DRAWER - visual design.
+     --------------------------------------------------------------------- */
+  .top-nav.mobile .top-nav__main-menus {
+    padding: 6px 8px !important;
   }
 
-  /* Icon bar stays a row; the profile dropdown takes its own full-width
-     line so its long submenu has somewhere to go. */
+  .top-nav.mobile .top-nav__main-menus > li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+    padding: 2px 0 !important;
+  }
+
+  .top-nav.mobile .top-nav__main-menus > li:last-child {
+    border-bottom: 0 !important;
+  }
+
+  .top-nav.mobile .top-nav__main-menus > li > a {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: uppercase !important;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    opacity: 0.95 !important;
+  }
+
+  .top-nav.mobile .top-nav__dropdown > ul {
+    padding: 2px 0 8px 12px !important;
+    margin: 0 0 4px 10px !important;
+    border-left: 2px solid rgba(217, 70, 239, 0.5) !important;
+  }
+
+  .top-nav.mobile .top-nav__dropdown > ul a {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+    gap: 10px !important;
+    opacity: 0.9 !important;
+  }
+
+  .top-nav.mobile .top-nav__dropdown > ul a:hover {
+    background: rgba(217, 70, 239, 0.14) !important;
+    opacity: 1 !important;
+  }
+
+  /* 44px touch targets for anything tappable in the drawer. */
+  .top-nav.mobile .top-nav__main-menus a,
+  .top-nav.mobile .top-nav__right a,
+  .top-nav.mobile .top-nav__main-menus button {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 44px !important;
+    padding-block: 2px !important;
+  }
+
+  /* Icons and avatars must never stretch. The min-height above turns
+     them into flex items that otherwise render as tall ellipses. */
+  .top-nav.mobile img {
+    flex: 0 0 auto !important;
+    width: 26px !important;
+    height: 26px !important;
+    aspect-ratio: 1 !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+  }
+
+  .top-nav.mobile .top-nav__branding img {
+    width: auto !important;
+    height: 30px !important;
+    aspect-ratio: auto !important;
+    border-radius: 0 !important;
+  }
+
+  .top-nav.mobile i {
+    flex: 0 0 auto !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-height: 0 !important;
+    font-size: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Stats: 2 readable columns. auto-fit with a px minimum forces 5
+     columns wider than the drawer and clips the first off the left. */
+  .top-nav.mobile .top-nav__ratio-bar {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    justify-items: start !important;
+    gap: 10px !important;
+    margin-top: 6px !important;
+    padding: 12px 14px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .top-nav.mobile .top-nav__ratio-bar li {
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
   .top-nav.mobile .top-nav__icon-bar {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: wrap !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    gap: 6px !important;
+    gap: 10px !important;
+    padding: 12px 14px 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
   .top-nav.mobile .top-nav__icon-bar > li {
@@ -167,33 +251,17 @@
     width: 100% !important;
   }
 
-  /* Stats readable as a wrapped grid rather than a squeezed strip.
-     Fixed 3 columns with minmax(0,...) - auto-fit with a px minimum
-     forces 5 columns wider than the drawer and clips the first one off
-     the left edge. minmax(0,1fr) lets columns shrink below content. */
-  .top-nav.mobile .top-nav__ratio-bar {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    justify-items: start !important;
-    gap: 6px 8px !important;
-    width: 100% !important;
-    padding: 8px 0 !important;
-  }
-
   /* ---------------------------------------------------------------------
-     4. Quick search: give it a resting width you can actually hit.
+     5. Quick search: a resting width you can actually hit.
      At >=1200px the wrapper computes to width:0 with a 10px input. It
-     expands to 400px on focus, but you have to hit a 10px sliver first.
-     180px here renders ~115px at rest and still expands on focus.
+     expands to 400px on focus, but you must hit a 10px sliver first.
+     180px renders ~115px at rest and still expands on focus.
+     Below 1100px the theme sets display:none on purpose - leave it.
 
-     Below 1100px the theme sets display:none, so this rule is inert
-     there by design - do not "fix" that, it is intentional.
-
-     The ratio bar gap comes down with it. At >=1500px the nav content
-     area is capped at ~1429px and already full, so a search box alone
-     overflows by 81px; the tighter gap buys back the ~48px that makes
-     180px fit. These two numbers are paired - changing one needs the
-     other re-measured. Verified 0 overflow at 1200/1280/1400/1500/1920.
+     The ratio-bar gap comes down with it: at >=1500px the nav content
+     area is capped ~1429px and already full, so a search box alone
+     overflows by 81px; the tighter gap buys back the ~48px. Paired
+     numbers - changing one needs the other re-measured.
      --------------------------------------------------------------------- */
   @media screen and (min-width: 1100px) {
     .quick-search {
@@ -212,9 +280,7 @@
   }
 
   /* The theme already overflows its own nav by 32px/12px at 1420/1440
-     before any of this loads - a pre-existing dead spot just below the
-     point where the layout switches to a single row. 180px re-triggers
-     it; 140px clears the whole band. */
+     before any of this loads. 180px re-triggers it; 140px clears it. */
   @media screen and (min-width: 1390px) and (max-width: 1459px) {
     .quick-search {
       width: 140px !important;
@@ -222,36 +288,7 @@
   }
 
   /* ---------------------------------------------------------------------
-     6. Mobile top bar (drawer CLOSED). The site logo is a long
-     three-word wordmark that refuses to shrink, pushing the bar ~62px
-     wider than a 360px screen. Let the left group shrink and the
-     wordmark wrap.
-     --------------------------------------------------------------------- */
-  @media screen and (max-width: 767px) {
-    .top-nav__left,
-    .top-nav__branding {
-      min-width: 0 !important;
-    }
-
-    .top-nav__branding {
-      flex: 1 1 auto !important;
-    }
-
-    .top-nav__site-logo {
-      min-width: 0 !important;
-      font-size: 11px !important;
-      line-height: 1.15 !important;
-      overflow-wrap: normal !important;
-    }
-  }
-
-  /* ---------------------------------------------------------------------
-     6b. Wordmark size, ALL widths.
-     The theme sets 22px Impact, which dominates the bar. 14px on desktop
-     / 11px on mobile (above). Tune these two numbers to taste - they are
-     the only thing controlling the wordmark.
-     Do NOT add white-space:nowrap on mobile: measured, it pushes the
-     document overflow from 36px to 114px.
+     6. Wordmark. Theme ships 22px Impact, which dominates the bar.
      --------------------------------------------------------------------- */
   .top-nav__site-logo {
     font-size: 14px !important;
@@ -262,63 +299,100 @@
     align-items: center !important;
   }
 
-  /* ---------------------------------------------------------------------
-     8. Polish: the nav had no hover feedback at all.
-     --------------------------------------------------------------------- */
-  .top-nav__main-menus > li > a {
-    border-radius: 6px !important;
-    padding-inline: 10px !important;
-    transition: background-color 0.15s ease, color 0.15s ease !important;
-  }
+  /* Mobile: the branding box collapses to 0px with overflow:visible, so
+     the wordmark spills out and paints over the Arcade button. There is
+     no room for it next to Arcade + hamburger - the NOBS icon stays as
+     the home link. (This block must come AFTER the base rule above:
+     same specificity, later wins.) */
+  @media screen and (max-width: 767px) {
+    .top-nav__site-logo {
+      display: none !important;
+    }
 
-  .top-nav__main-menus > li > a:hover {
-    background-color: rgba(217, 70, 239, 0.18) !important;
-  }
+    .top-nav__branding {
+      flex: 0 0 auto !important;
+      min-width: auto !important;
+    }
 
-  .top-nav__icon-bar a:hover,
-  .top-nav__icon-bar span:hover {
-    filter: brightness(1.25) !important;
-  }
-
-  .quick-search__input {
-    border-radius: 6px !important;
+    .top-nav__left {
+      gap: 10px !important;
+      align-items: center !important;
+    }
   }
 
   /* ---------------------------------------------------------------------
      7. MOBILE CONTENT - not navigation, but it is what makes the site
-     look broken on a phone.
-
-     Note on section 1: overflow-x: clip stops the sideways scroll, but it
-     HIDES overflowing content rather than fixing it - which also made a
-     naive "page overflow = 0" check pass while content was unreachable.
-     These rules remove the actual causes, verified with clip disabled:
-     36px document overflow -> 0, and 0 elements crossing the right edge.
+     look broken on a phone. Verified with overflow-x:clip disabled:
+     36px document overflow -> 0, 0 elements crossing the right edge.
      --------------------------------------------------------------------- */
 
-  /* Chat: bot messages carry white-space:nowrap links up to 830px wide,
-     so every line needed sideways scrolling to read. */
+  /* Chat: bot-message links carried white-space:nowrap up to 830px wide,
+     so every line needed sideways scrolling.
+     Only the message BODY may break - applying overflow-wrap:anywhere to
+     the whole message shreds the username into one letter per line. */
   .chatroom__messages--wrapper {
     overflow-x: hidden !important;
   }
 
-  .chatroom__messages--wrapper a,
-  .chatbox-message a,
-  .bbcode-rendered a {
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    word-break: break-word !important;
-  }
-
   .chatbox-message,
-  .chatbox-message__header,
-  .bbcode-rendered,
   .chatroom__messages--wrapper li {
+    overflow-wrap: normal !important;
     max-width: 100% !important;
     min-width: 0 !important;
+  }
+
+  .chatbox-message__address,
+  .chatbox-message__address *,
+  .chatbox-message__time {
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
+  }
+
+  .chatbox-message__header {
+    flex-wrap: wrap !important;
+    align-items: baseline !important;
+    column-gap: 6px !important;
+    row-gap: 2px !important;
+  }
+
+  .chatbox-message__header .bbcode-rendered {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    white-space: normal !important;
     overflow-wrap: anywhere !important;
   }
 
   @media screen and (max-width: 767px) {
+    /* Full-width blocks go edge to edge. Rounded corners plus side
+       margins on a phone just look unfinished. */
+    .alerts,
+    .alert,
+    .special-event-alert,
+    .panelV2,
+    .panel,
+    .chatroom,
+    .chatroom__messages--wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      border-radius: 0 !important;
+    }
+
+    .special-event-alert img,
+    .panelV2 > img,
+    .panel > img {
+      border-radius: 0 !important;
+    }
+
+    .chatbox-message {
+      margin-left: 8px !important;
+      margin-right: 8px !important;
+      border-radius: 10px !important;
+    }
+
     /* Countdown banner: a flex item at min-width:auto refusing to shrink. */
     .alerts *,
     .special-event-alert * {
@@ -352,9 +426,27 @@
   }
 
   /* ---------------------------------------------------------------------
-     5. Keyboard focus. The theme ships no visible focus state, which
-     makes tabbing the nav guesswork.
+     8. Desktop polish. The nav shipped no hover or focus feedback.
      --------------------------------------------------------------------- */
+  .top-nav__main-menus > li > a {
+    border-radius: 6px !important;
+    padding-inline: 10px !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+  }
+
+  .top-nav__main-menus > li > a:hover {
+    background-color: rgba(217, 70, 239, 0.18) !important;
+  }
+
+  .top-nav__icon-bar a:hover,
+  .top-nav__icon-bar span:hover {
+    filter: brightness(1.25) !important;
+  }
+
+  .quick-search__input {
+    border-radius: 6px !important;
+  }
+
   .top-nav a:focus-visible,
   .top-nav button:focus-visible,
   .quick-search__input:focus-visible {
