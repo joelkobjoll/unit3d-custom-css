@@ -192,13 +192,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------
-   4. DESKTOP - keep the quick search usable.
-   Between ~900px and ~1000px the search wrapper collapses to 0px while
-   the desktop menu is already visible. flex-basis + a real min-width
-   stop it being crushed out of existence.
-   --------------------------------------------------------------------- */
-/* ---------------------------------------------------------------------
-   5b. Quick search: give it a resting width you can actually hit.
+   4. Quick search: give it a resting width you can actually hit.
    At >=1200px the wrapper computes to width:0 with a 10px input. It
    expands to 400px on focus, but you have to hit a 10px sliver first.
    180px here renders ~115px at rest and still expands on focus.
