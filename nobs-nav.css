@@ -248,7 +248,80 @@ body {
     flex: 1 1 auto !important;
   }
 
+  /* 22px Impact in a ~73px box wrapped to THREE lines. Dropping to
+     15px keeps it legible and shorter. Do NOT use white-space:nowrap
+     here - measured, it forces the bar wider and takes the document
+     overflow from 36px to 114px. */
   .top-nav__site-logo {
+    min-width: 0 !important;
+    font-size: 15px !important;
+    line-height: 1.1 !important;
+    overflow-wrap: normal !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   7. MOBILE CONTENT - not navigation, but it is what makes the site
+   look broken on a phone.
+
+   Note on section 1: overflow-x: clip stops the sideways scroll, but it
+   HIDES overflowing content rather than fixing it - which also made a
+   naive "page overflow = 0" check pass while content was unreachable.
+   These rules remove the actual causes, verified with clip disabled:
+   36px document overflow -> 0, and 0 elements crossing the right edge.
+   --------------------------------------------------------------------- */
+
+/* Chat: bot messages carry white-space:nowrap links up to 830px wide,
+   so every line needed sideways scrolling to read. */
+.chatroom__messages--wrapper {
+  overflow-x: hidden !important;
+}
+
+.chatroom__messages--wrapper a,
+.chatbox-message a,
+.bbcode-rendered a {
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+.chatbox-message,
+.chatbox-message__header,
+.bbcode-rendered,
+.chatroom__messages--wrapper li {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+
+@media screen and (max-width: 767px) {
+  /* Countdown banner: a flex item at min-width:auto refusing to shrink. */
+  .alerts *,
+  .special-event-alert * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .special-event-alert div {
+    flex-wrap: wrap !important;
+  }
+
+  /* Panel tab strips - the last 36px of document overflow. */
+  .panel__tabs {
+    flex-wrap: wrap !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  .panel__tab {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .random__media a,
+  .random__media .media__title {
+    max-width: 100% !important;
     min-width: 0 !important;
     overflow-wrap: anywhere !important;
   }
