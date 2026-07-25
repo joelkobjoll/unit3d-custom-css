@@ -38,221 +38,231 @@ body {
   cursor: pointer !important;
 }
 
-/* ---------------------------------------------------------------------
-   3. MOBILE DRAWER - structure.
-   Scoped to .top-nav.mobile, the class the site's own JS toggles.
+/* =====================================================================
+   DRAWER SCOPE: every .top-nav.mobile rule lives inside this media
+   query. The theme adds the .mobile class whenever the hamburger is
+   used - INCLUDING on desktop, where that button still exists. Scoped
+   by class alone, the mobile drawer design took over a 1900px screen.
+   ===================================================================== */
+@media screen and (max-width: 900px) {
 
-   The theme lays the nav out as CSS grid. In the drawer that grid lets
-   a too-tall submenu escape its row and paint over its neighbours - the
-   profile submenu rendered 546px tall inside a 124px icon bar. Flex
-   column + everything full width + static positioning makes every item
-   reserve its own space.
-   --------------------------------------------------------------------- */
-.top-nav.mobile {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-  max-height: 85vh !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain !important;
-  background: #0a0a0f !important;
-  padding: 0 0 18px !important;
-  row-gap: 0 !important;
-}
+  /* ---------------------------------------------------------------------
+     3. MOBILE DRAWER - structure.
+     Scoped to .top-nav.mobile, the class the site's own JS toggles.
 
-.top-nav.mobile > * {
-  width: 100% !important;
-  max-width: 100% !important;
-  flex: 0 0 auto !important;
-}
-
-.top-nav.mobile > .top-nav__toggle {
-  width: 44px !important;
-  max-width: 44px !important;
-  flex: 0 0 44px !important;
-  align-self: flex-end !important;
-  order: -1 !important;
-  margin: 6px 10px 0 auto !important;
-}
-
-.top-nav.mobile .top-nav__left {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  gap: 12px !important;
-  padding: 4px 14px 12px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.top-nav.mobile .top-nav__main-menus,
-.top-nav.mobile .top-nav__right {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-}
-
-/* Nested lists flow in place instead of floating over siblings.
-   This is the rule that actually fixes the overlap. */
-.top-nav.mobile ul {
-  position: static !important;
-  inset: auto !important;
-  transform: none !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  height: auto !important;
-  max-height: none !important;
-  box-shadow: none !important;
-}
-
-.top-nav.mobile .top-nav__main-menus > li,
-.top-nav.mobile .top-nav__dropdown {
-  display: block !important;
-  width: 100% !important;
-  position: static !important;
-  /* theme pins these to height:60px, which clips the submenu */
-  height: auto !important;
-  min-height: 0 !important;
-}
-
-/* The theme ships TWO anchors per dropdown - one for hover devices, one
-   for touch - and hides whichever does not apply. The display rule in
-   section 4 un-hides both, stacking 88px of links into one row.
-   Re-assert exactly one (0,4,0 beats 0,3,1). */
-@media (hover: hover) {
-  .top-nav.mobile .top-nav__main-menus .top-nav__dropdown--touch {
-    display: none !important;
+     The theme lays the nav out as CSS grid. In the drawer that grid lets
+     a too-tall submenu escape its row and paint over its neighbours - the
+     profile submenu rendered 546px tall inside a 124px icon bar. Flex
+     column + everything full width + static positioning makes every item
+     reserve its own space.
+     --------------------------------------------------------------------- */
+  .top-nav.mobile {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    background: #0a0a0f !important;
+    padding: 0 0 18px !important;
+    row-gap: 0 !important;
   }
-}
 
-@media (hover: none) {
-  .top-nav.mobile .top-nav__main-menus .top-nav__dropdown--nontouch {
-    display: none !important;
+  .top-nav.mobile > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
   }
-}
 
-/* ---------------------------------------------------------------------
-   4. MOBILE DRAWER - visual design.
-   --------------------------------------------------------------------- */
-.top-nav.mobile .top-nav__main-menus {
-  padding: 6px 8px !important;
-}
+  .top-nav.mobile > .top-nav__toggle {
+    width: 44px !important;
+    max-width: 44px !important;
+    flex: 0 0 44px !important;
+    align-self: flex-end !important;
+    order: -1 !important;
+    margin: 6px 10px 0 auto !important;
+  }
 
-.top-nav.mobile .top-nav__main-menus > li {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-  padding: 2px 0 !important;
-}
+  .top-nav.mobile .top-nav__left {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 4px 14px 12px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
 
-.top-nav.mobile .top-nav__main-menus > li:last-child {
-  border-bottom: 0 !important;
-}
+  .top-nav.mobile .top-nav__main-menus,
+  .top-nav.mobile .top-nav__right {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
 
-.top-nav.mobile .top-nav__main-menus > li > a {
-  font-size: 15px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.02em !important;
-  text-transform: uppercase !important;
-  padding: 10px !important;
-  border-radius: 8px !important;
-  opacity: 0.95 !important;
-}
+  /* Nested lists flow in place instead of floating over siblings.
+     This is the rule that actually fixes the overlap. */
+  .top-nav.mobile ul {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    box-shadow: none !important;
+  }
 
-.top-nav.mobile .top-nav__dropdown > ul {
-  padding: 2px 0 8px 12px !important;
-  margin: 0 0 4px 10px !important;
-  border-left: 2px solid rgba(217, 70, 239, 0.5) !important;
-}
+  .top-nav.mobile .top-nav__main-menus > li,
+  .top-nav.mobile .top-nav__dropdown {
+    display: block !important;
+    width: 100% !important;
+    position: static !important;
+    /* theme pins these to height:60px, which clips the submenu */
+    height: auto !important;
+    min-height: 0 !important;
+  }
 
-.top-nav.mobile .top-nav__dropdown > ul a {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  padding: 8px 10px !important;
-  border-radius: 6px !important;
-  gap: 10px !important;
-  opacity: 0.9 !important;
-}
+  /* The theme ships TWO anchors per dropdown - one for hover devices, one
+     for touch - and hides whichever does not apply. The display rule in
+     section 4 un-hides both, stacking 88px of links into one row.
+     Re-assert exactly one (0,4,0 beats 0,3,1). */
+  @media (hover: hover) {
+    .top-nav.mobile .top-nav__dropdown--touch {
+      display: none !important;
+    }
+  }
 
-.top-nav.mobile .top-nav__dropdown > ul a:hover {
-  background: rgba(217, 70, 239, 0.14) !important;
-  opacity: 1 !important;
-}
+  @media (hover: none) {
+    .top-nav.mobile .top-nav__dropdown--nontouch {
+      display: none !important;
+    }
+  }
 
-/* 44px touch targets for anything tappable in the drawer. */
-.top-nav.mobile .top-nav__main-menus a,
-.top-nav.mobile .top-nav__right a,
-.top-nav.mobile .top-nav__main-menus button {
-  display: flex !important;
-  align-items: center !important;
-  min-height: 44px !important;
-  padding-block: 2px !important;
-}
+  /* ---------------------------------------------------------------------
+     4. MOBILE DRAWER - visual design.
+     --------------------------------------------------------------------- */
+  .top-nav.mobile .top-nav__main-menus {
+    padding: 6px 8px !important;
+  }
 
-/* Icons and avatars must never stretch. The min-height above turns
-   them into flex items that otherwise render as tall ellipses. */
-.top-nav.mobile img {
-  flex: 0 0 auto !important;
-  width: 26px !important;
-  height: 26px !important;
-  aspect-ratio: 1 !important;
-  object-fit: cover !important;
-  border-radius: 50% !important;
-}
+  .top-nav.mobile .top-nav__main-menus > li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+    padding: 2px 0 !important;
+  }
 
-.top-nav.mobile .top-nav__branding img {
-  width: auto !important;
-  height: 30px !important;
-  aspect-ratio: auto !important;
-  border-radius: 0 !important;
-}
+  .top-nav.mobile .top-nav__main-menus > li:last-child {
+    border-bottom: 0 !important;
+  }
 
-.top-nav.mobile i {
-  flex: 0 0 auto !important;
-  width: 18px !important;
-  height: 18px !important;
-  min-height: 0 !important;
-  font-size: 14px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
+  .top-nav.mobile .top-nav__main-menus > li > a {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: uppercase !important;
+    padding: 10px !important;
+    border-radius: 8px !important;
+    opacity: 0.95 !important;
+  }
 
-/* Stats: 2 readable columns. auto-fit with a px minimum forces 5
-   columns wider than the drawer and clips the first off the left. */
-.top-nav.mobile .top-nav__ratio-bar {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  justify-items: start !important;
-  gap: 10px !important;
-  margin-top: 6px !important;
-  padding: 12px 14px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
+  .top-nav.mobile .top-nav__dropdown > ul {
+    padding: 2px 0 8px 12px !important;
+    margin: 0 0 4px 10px !important;
+    border-left: 2px solid rgba(217, 70, 239, 0.5) !important;
+  }
 
-.top-nav.mobile .top-nav__ratio-bar li {
-  display: flex !important;
-  align-items: center !important;
-  gap: 7px !important;
-  font-size: 13px !important;
-  white-space: nowrap !important;
-}
+  .top-nav.mobile .top-nav__dropdown > ul a {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+    gap: 10px !important;
+    opacity: 0.9 !important;
+  }
 
-.top-nav.mobile .top-nav__icon-bar {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 10px !important;
-  padding: 12px 14px 0 !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
+  .top-nav.mobile .top-nav__dropdown > ul a:hover {
+    background: rgba(217, 70, 239, 0.14) !important;
+    opacity: 1 !important;
+  }
 
-.top-nav.mobile .top-nav__icon-bar > li {
-  width: auto !important;
-}
+  /* 44px touch targets for anything tappable in the drawer. */
+  .top-nav.mobile .top-nav__main-menus a,
+  .top-nav.mobile .top-nav__right a,
+  .top-nav.mobile .top-nav__main-menus button {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 44px !important;
+    padding-block: 2px !important;
+  }
 
-.top-nav.mobile .top-nav__icon-bar > li.top-nav__dropdown {
-  width: 100% !important;
+  /* Icons and avatars must never stretch. The min-height above turns
+     them into flex items that otherwise render as tall ellipses. */
+  .top-nav.mobile img {
+    flex: 0 0 auto !important;
+    width: 26px !important;
+    height: 26px !important;
+    aspect-ratio: 1 !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+  }
+
+  .top-nav.mobile .top-nav__branding img {
+    width: auto !important;
+    height: 30px !important;
+    aspect-ratio: auto !important;
+    border-radius: 0 !important;
+  }
+
+  .top-nav.mobile i {
+    flex: 0 0 auto !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-height: 0 !important;
+    font-size: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Stats: 2 readable columns. auto-fit with a px minimum forces 5
+     columns wider than the drawer and clips the first off the left. */
+  .top-nav.mobile .top-nav__ratio-bar {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    justify-items: start !important;
+    gap: 10px !important;
+    margin-top: 6px !important;
+    padding: 12px 14px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .top-nav.mobile .top-nav__ratio-bar li {
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .top-nav.mobile .top-nav__icon-bar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 12px 14px 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .top-nav.mobile .top-nav__icon-bar > li {
+    width: auto !important;
+  }
+
+  .top-nav.mobile .top-nav__icon-bar > li.top-nav__dropdown {
+    width: 100% !important;
+  }
+
 }
 
 /* ---------------------------------------------------------------------
@@ -457,4 +467,13 @@ body {
   outline: 2px solid #d946ef !important;
   outline-offset: 2px !important;
   border-radius: 4px !important;
+}
+
+/* ---------------------------------------------------------------------
+   9. Home banner. Decorative NOBS artwork that costs ~235px of desktop
+   and half a phone screen before any content. It carries no
+   information, so it goes. Delete this block to bring it back.
+   --------------------------------------------------------------------- */
+main.page__home > article > div:has(> img) {
+  display: none !important;
 }
