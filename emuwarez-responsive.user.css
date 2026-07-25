@@ -1,0 +1,217 @@
+/* ==UserStyle==
+@name           eMuwarez - Responsive Fix
+@namespace      emuwarez.local
+@version        1.1.0
+@description    Tames the 85vh "Nebula" hero, kills the site-wide horizontal overflow, and makes the top nav shrink instead of running off the screen.
+@author         local
+@license        Unlicense
+==/UserStyle== */
+
+@-moz-document domain("emuwarez.com") {
+
+  /* =================================================================
+     WHY EVERY SELECTOR IS DOUBLED (.nebula-top-nav.nebula-top-nav)
+     -----------------------------------------------------------------
+     The theme ships its Nebula CSS in <style> blocks that sit INSIDE
+     <body> (one in <header>, one in <article>), and nearly every
+     declaration is !important. A userstyle lands in <head>, so on a
+     specificity tie the site's !important wins on document order.
+
+     Repeating the class raises specificity from (0,1,0) to (0,2,0)
+     without changing what it matches, so these rules actually apply.
+     Do not "tidy" the duplicates away - the file silently stops
+     working if you do.
+     ================================================================= */
+
+  /* =================================================================
+     1. HORIZONTAL OVERFLOW (every page, every width >= 1024px)
+     -----------------------------------------------------------------
+     .nebula-hero-wrapper does a full-bleed break-out with
+        width: 100vw; margin-left: calc(50% - 50vw);
+     100vw includes the scrollbar, so the document is always ~13px
+     wider than the viewport. The nav then piled on another 160-380px.
+
+     overflow-x: clip (not hidden) removes the sideways scroll WITHOUT
+     creating a scroll container, so the sticky header and sticky
+     table headers keep working. `hidden` would break them.
+     ================================================================= */
+  html,
+  body {
+    overflow-x: clip !important;
+    max-width: 100% !important;
+  }
+
+  /* =================================================================
+     2. THE HUGE HEADER
+     -----------------------------------------------------------------
+     Original: min-height: 85vh at EVERY width - there is no media
+     query for it anywhere in the site CSS. On a 1080p laptop that's
+     ~800px of banner before a single torrent is visible.
+
+     clamp() keeps it cinematic on big screens and sane everywhere
+     else: never under 300px, never over 460px.
+     ================================================================= */
+  .nebula-hero-wrapper.nebula-hero-wrapper {
+    min-height: clamp(300px, 42vh, 460px) !important;
+    height: auto !important;
+  }
+
+  .nebula-hero-content.nebula-hero-content {
+    padding: 2rem 0 !important;
+  }
+
+  .nebula-hero-title.nebula-hero-title {
+    font-size: clamp(1.75rem, 3.6vw, 3.4rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .nebula-hero-desc.nebula-hero-desc {
+    font-size: clamp(0.9rem, 1vw, 1.1rem) !important;
+  }
+
+  /* The bottom fade was sized for an 85vh hero. */
+  .nebula-hero-fade-bottom.nebula-hero-fade-bottom {
+    height: 40% !important;
+  }
+
+  /* Short/landscape windows. */
+  @media (max-height: 620px) {
+    .nebula-hero-wrapper.nebula-hero-wrapper {
+      min-height: 260px !important;
+    }
+  }
+
+  /* =================================================================
+     3. TOP NAV: SHRINK INSTEAD OF OVERFLOW
+     -----------------------------------------------------------------
+     .nebula-top-nav is flex + nowrap with three rigid groups:
+       left    155 (logo) + 400 (search)      = 555px
+       center  ~476px (menu + Donaciones VIP)
+       right   657px (5 stat pills + 4 icons)
+     ...plus 2vw side padding and 15px gaps: ~1790px minimum. Every
+     laptop width overflowed - 384px off-screen at 1280px.
+
+     Rules of the fix:
+       - the menu and the icon cluster NEVER shrink. Letting them
+         shrink makes their children overflow their own box and
+         overlap the neighbour ("Donaciones VIP" sitting on top of
+         the stat pills). Overlap is not scroll overflow, so it looks
+         clean to scrollWidth while being visibly broken.
+       - the search box is fluid and absorbs the slack.
+       - the stat pills drop out in order of usefulness.
+     ================================================================= */
+  .nebula-top-nav.nebula-top-nav {
+    gap: 10px !important;
+    padding-inline: clamp(8px, 1.5vw, 28px) !important;
+  }
+
+  .nebula-nav-left.nebula-nav-left {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .nebula-nav-center.nebula-nav-center,
+  .nebula-nav-right.nebula-nav-right {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+  }
+
+  .nebula-branding.nebula-branding {
+    flex: 0 0 auto !important;
+  }
+
+  .nebula-search-wrapper.nebula-search-wrapper {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: clamp(110px, 22vw, 400px) !important;
+  }
+
+  .nebula-search-wrapper.nebula-search-wrapper .quick-search {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .nebula-ratio-bar.nebula-ratio-bar,
+  .nebula-icon-bar.nebula-icon-bar {
+    flex-shrink: 0 !important;
+  }
+
+  /* --- progressive disclosure of the stat pills -------------------
+     DOM order: 1 upload, 2 download, 3 ratio, 4 buffer, 5 points.
+
+     Thresholds are solved from the real measurements, not guessed.
+     Fixed chrome = logo 155 + menu 476 + icons 186 + gaps 20 = 837px.
+     Search is 22vw, side padding 2 x 1.5vw, scrollbar ~13px, so the
+     width W needed to fit a stat bar of S px is:
+         0.25W + 850 + S <= W - 13   ->   W >= (863 + S) / 0.75
+     S = 0 -> 1151   S = 82 (ratio) -> 1260
+     S = 280 (3 pills) -> 1524   S = 474 (5 pills) -> 1783
+     Rounded up to the breakpoints below. Everything hidden here is
+     still on the profile page.
+     ---------------------------------------------------------------- */
+
+  /* < 1800px: drop buffer + points. */
+  @media (max-width: 1800px) {
+    .nebula-ratio-bar.nebula-ratio-bar > li:nth-child(n + 4) {
+      display: none !important;
+    }
+  }
+
+  /* < 1550px: drop upload + download, keep ratio. */
+  @media (max-width: 1550px) {
+    .nebula-ratio-bar.nebula-ratio-bar > li:nth-child(-n + 2) {
+      display: none !important;
+    }
+  }
+
+  /* < 1280px: the menu needs the room; stats go entirely. */
+  @media (max-width: 1280px) {
+    .nebula-ratio-bar.nebula-ratio-bar {
+      display: none !important;
+    }
+  }
+
+  /* < 1200px: wordmark goes too, the donkey still gets you home. */
+  @media (max-width: 1200px) {
+    .nebula-branding.nebula-branding .text-logo {
+      display: none !important;
+    }
+  }
+
+  /* =================================================================
+     4. DROPDOWNS RUNNING OFF THE RIGHT EDGE
+     ================================================================= */
+  .nebula-dropdown.nebula-dropdown {
+    right: 0 !important;
+    left: auto !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+
+  /* =================================================================
+     5. SMALL SCREENS
+     -----------------------------------------------------------------
+     The theme already swaps to a hamburger below ~1024px, so the nav
+     is fine there. The hero was not: it still claimed 85vh and put
+     its text in a 90%-wide box offset by 6vw.
+     ================================================================= */
+  @media (max-width: 700px) {
+    .nebula-hero-wrapper.nebula-hero-wrapper {
+      min-height: clamp(240px, 34vh, 360px) !important;
+    }
+
+    .nebula-hero-content.nebula-hero-content {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      padding: 1.25rem 16px !important;
+    }
+
+    .nebula-hero-title.nebula-hero-title {
+      font-size: clamp(1.5rem, 6.5vw, 2.2rem) !important;
+    }
+
+    .nebula-hero-btns.nebula-hero-btns {
+      flex-wrap: wrap !important;
+    }
+  }
+}
