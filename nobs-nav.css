@@ -248,16 +248,25 @@ body {
     flex: 1 1 auto !important;
   }
 
-  /* 22px Impact in a ~73px box wrapped to THREE lines. Dropping to
-     15px keeps it legible and shorter. Do NOT use white-space:nowrap
-     here - measured, it forces the bar wider and takes the document
-     overflow from 36px to 114px. */
   .top-nav__site-logo {
     min-width: 0 !important;
-    font-size: 15px !important;
-    line-height: 1.1 !important;
+    font-size: 11px !important;
+    line-height: 1.15 !important;
     overflow-wrap: normal !important;
   }
+}
+
+/* ---------------------------------------------------------------------
+   6b. Wordmark size, ALL widths.
+   The theme sets 22px Impact, which dominates the bar. 14px on desktop
+   / 11px on mobile (above). Tune these two numbers to taste - they are
+   the only thing controlling the wordmark.
+   Do NOT add white-space:nowrap on mobile: measured, it pushes the
+   document overflow from 36px to 114px.
+   --------------------------------------------------------------------- */
+.top-nav__site-logo {
+  font-size: 14px !important;
+  line-height: 1.15 !important;
 }
 
 /* ---------------------------------------------------------------------

@@ -1,25 +1,15 @@
 /* ==UserStyle==
 @name           NOBS - Navigation Fix (desktop + mobile)
 @namespace      nobs.local
-@version        1.1.0
-@description    Fixes the overlapping mobile drawer, 44x44 touch targets, the 10px-wide desktop quick search, and mobile content overflow on nobs.rawsmoke.net.
+@version        1.2.0
+@description    Smaller wordmark, fixed mobile drawer, 44x44 touch targets, usable desktop quick search, no mobile content overflow.
 @author         local
 @license        Unlicense
 ==/UserStyle== */
 
-/* WHY A USERSTYLE AND NOT THE custom_css URL FIELD
-   -------------------------------------------------------------------
-   nobs.rawsmoke.net sends:
-       Content-Security-Policy: ... style-src 'unsafe-inline' ...
-   No 'self', no external hosts. A <link> to any third-party URL is
-   refused with a style-src-elem violation, so the Settings custom_css
-   field cannot load this from a CDN - it stores the value and nothing
-   happens. Same-origin stylesheets DO load, so hosting this file on
-   nobs.rawsmoke.net itself would also work, but that needs an admin.
-
-   Inline styles are permitted, which is how Stylus applies a
-   userstyle - so this route works today with no server-side change.
-   ------------------------------------------------------------------- */
+/* Only works via Stylus. nobs.rawsmoke.net sends
+   Content-Security-Policy: style-src 'unsafe-inline' - no external
+   hosts - so the Settings custom_css URL field cannot load this. */
 
 @-moz-document domain("nobs.rawsmoke.net") {
 
@@ -247,16 +237,25 @@
       flex: 1 1 auto !important;
     }
 
-    /* 22px Impact in a ~73px box wrapped to THREE lines. Dropping to
-       15px keeps it legible and shorter. Do NOT use white-space:nowrap
-       here - measured, it forces the bar wider and takes the document
-       overflow from 36px to 114px. */
     .top-nav__site-logo {
       min-width: 0 !important;
-      font-size: 15px !important;
-      line-height: 1.1 !important;
+      font-size: 11px !important;
+      line-height: 1.15 !important;
       overflow-wrap: normal !important;
     }
+  }
+
+  /* ---------------------------------------------------------------------
+     6b. Wordmark size, ALL widths.
+     The theme sets 22px Impact, which dominates the bar. 14px on desktop
+     / 11px on mobile (above). Tune these two numbers to taste - they are
+     the only thing controlling the wordmark.
+     Do NOT add white-space:nowrap on mobile: measured, it pushes the
+     document overflow from 36px to 114px.
+     --------------------------------------------------------------------- */
+  .top-nav__site-logo {
+    font-size: 14px !important;
+    line-height: 1.15 !important;
   }
 
   /* ---------------------------------------------------------------------
